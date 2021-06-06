@@ -143,6 +143,10 @@ int64 getpriority(){
     return syscall(SYS_getpriority);
 }
 
+void* sharedmem(char* name, size_t len){
+    return (void*) syscall(SYS_sharedmem, name, len);
+}
+
 int set_dsid(int pid, uint32 dsid)
 {
     return syscall(SYS_set_dsid, pid, dsid);
@@ -158,8 +162,4 @@ uint32 get_l2_traffic(uint32 dsid)
     return syscall(SYS_get_l2_traffic, dsid);
 }
 
-void *sharedmem(char *name, size_t len)
-{
-    return (void *)syscall(SYS_sharedmem, name, len);
-}
 // =============================================================

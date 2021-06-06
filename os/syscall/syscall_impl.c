@@ -498,6 +498,45 @@ bad:
     return -1;
 }
 
+void*sys_sharedmem(char* name_va, size_t len){
+    char name[MAX_SHARED_NAME];
+
+    struct proc* p = curr_proc();
+    err_t err = copyinstr(p->pagetable ,name, (uint64)name_va, MAX_SHARED_NAME);
+    if(err <0){
+        return NULL;
+    }
+
+
+    if(len %PGSIZE != 0){
+        return NULL;
+    }
+
+    if(len >MAX_SHARED_MEM_SIZE){
+        return NULL;
+    }
+
+
+
+   struct shared_mem * shmem = get_shared_mem_by_name(name, len/PGSIZE);
+    if(shmem==NULL){
+        return NULL;
+    }
+
+    if (len >0 && shmem->page_cnt != len/PGSIZE){
+        // get a shared mem but different size -> created by some one else
+        drop_shared_mem(shmem);
+        shmem = NULL;
+        return NULL;
+    }
+
+
+    void* shmem_va=  map_shared_mem(shmem);
+
+
+    return shmem_va;
+}
+
 int sys_set_dsid(int pid, uint32 dsid)
 {
     struct proc *p = findproc(pid);
@@ -535,7 +574,6 @@ int sys_set_dsid_param(uint32 dsid, uint32 freq, uint32 size, uint32 inc, uint32
     size = cp_reg_r(CP_BUCKET_SIZE - CP_HART_DSID);
     inc = cp_reg_r(CP_BUCKET_INC - CP_HART_DSID);
     mask = cp_reg_r(CP_WAYMASK - CP_HART_DSID);
-    mmiowb();
     int bandwidth = 0;
     if (freq != 0)
         bandwidth = CYCLE_FREQ * 8 / 1024 * inc / freq;
@@ -552,33 +590,3 @@ uint32 sys_get_l2_traffic(uint32 dsid)
     release(&dsid_lock);
     return ret;
 }
-
-void *sys_sharedmem(char *name_va, size_t len)
-{
-    char name[MAX_SHARED_NAME];
-
-    struct proc *p = curr_proc();
-    err_t err = copyinstr(p->pagetable, name, (uint64)name_va, MAX_SHARED_NAME);
-    if (err < 0)
-        return NULL;
-    if (len % PGSIZE != 0)
-        return NULL;
-
-    if (len > MAX_SHARED_MEM_SIZE)
-        return NULL;
-
-    struct shared_mem *shmem = get_shared_mem_by_name(name, len / PGSIZE);
-    if (shmem == NULL)
-        return NULL;
-
-    if (len > 0 && shmem->page_cnt != len / PGSIZE)
-    {
-        // get a shared mem but different size -> created by some one else
-        drop_shared_mem(shmem);
-        shmem = NULL;
-        return NULL;
-    }
-    void *shmem_va = map_shared_mem(shmem);
-    return shmem_va;
-}
-

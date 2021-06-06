@@ -37,7 +37,7 @@ void print_help(){
 }
 
 char args_buffer[1024];
-char *argv[10]; 
+char *argv[20];
 char *args_buffer_cur;
 void parse_line(){
     args_buffer_cur = args_buffer;
@@ -77,7 +77,7 @@ void parse_line(){
     // {
     //     printf("argv[%d]=\"%s\"\n", i, argv[i]);
     // }
-    
+
     if (argc == 0){
         return;
     }

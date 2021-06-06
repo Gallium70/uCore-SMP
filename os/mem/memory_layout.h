@@ -40,5 +40,5 @@
 #define DSID_CP_BASE 0x20000
 #define DSID_CP_SIZE 0x10000
 
-#define USER_STACK_BOTTOM 0x110000000   // 3GB, user stack lower address
+#define USER_STACK_BOTTOM 0xC0000000   // 3GB, user stack lower address
 #define USER_TEXT_START 0x1000

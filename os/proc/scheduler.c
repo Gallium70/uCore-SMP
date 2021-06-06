@@ -60,12 +60,10 @@ void scheduler(void)
             pushtrace(0x3011);
             pushtrace(next_proc->context.ra);
 
-            if (is_panic_addr(next_proc->context.ra))
-                debugcore("1070 in scheduler !\n");
             w_dsid(next_proc->dsid);
-            mmiowb();
+            fence();
             swtch(&mycpu()->context, &next_proc->context);
-            mmiowb();
+            // fence();
 
             busy += r_cycle() - busy_start;
             uint64 time_delta = get_time_ms() - next_proc->last_start_time;

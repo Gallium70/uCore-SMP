@@ -308,13 +308,22 @@ static inline uint64 r_a1() {
 
 static inline void ebreak(void) { asm volatile("ebreak"); }
 
-static inline void mmiowb(void)
+static inline void fence(void)
 {
-    asm volatile("fence iorw, iorw\n\t"
-                 "fence.i"
-                 :
-                 :
-                 : "memory");
+    asm volatile(
+        "fence iorw, iorw\n\t"
+        :
+        :
+        : "memory");
+}
+
+static inline void fence_i(void)
+{
+    asm volatile(
+        "fence.i"
+        :
+        :
+        : "memory");
 }
 
 static inline int is_panic_addr(uint64 addr)

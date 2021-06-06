@@ -71,13 +71,11 @@ int main(void)
         printf("[\x1b[31m");
         int tens = (use_per + 1) / 2;
         for (int i = 0; i < tens; i++)
-        {
             printf("|");
-        }
 
         printf("\x1b[13;52f");
         printf("\x1b[0m] %d%%\n\n", use_per);
-// Process | pid | ppid | dsid | heap | mem | cpu time | state
+        // Process | pid | ppid | dsid | heap | mem | cpu time | state
         printf("Process | pid | ppid | dsid | heap | mem | cpu time | state\n", p_cnt);
         if (p_cnt > 0)
         {

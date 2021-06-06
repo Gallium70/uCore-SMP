@@ -120,7 +120,6 @@ void proc_free_mem_and_pagetable(struct proc* p) {
     free_user_mem_and_pagetables(p->pagetable, p->total_size);
     p->pagetable = NULL;
     p->total_size = 0;
-    mmiowb();
 }
 
 
@@ -152,7 +151,7 @@ void freeproc(struct proc *p) {
     p->parent = NULL;
     p->ustack_bottom = 0;
     p->kstack = 0;
-    memset(&p->context, 0xA, sizeof(p->context));
+    memset(&p->context, 0, sizeof(p->context));
     p->stride = 0;
     p->priority = 0;
     p->cpu_time = 0;
@@ -212,29 +211,14 @@ found:
         release(&p->lock);
         return NULL;
     }
-    memset(&p->context, 0xC, sizeof(p->context));
+    memset(&p->context, 0, sizeof(p->context));
     p->kstack = (uint64)kstack[p - pool];
-    memset((void *)p->kstack, 0xB, KSTACK_SIZE);
+    memset((void *)p->kstack, 0, KSTACK_SIZE);
 
     p->context.ra = (uint64)forkret; // used in swtch()
     p->context.sp = p->kstack + KSTACK_SIZE;
 
     p->stride = 0;
-    // uint64 min_stride = 0xFFFFFFFFFFFFFFFULL;
-    // for (struct proc *q = pool; q < &pool[NPROC]; ++q)
-    //     switch (q->state)
-    //     {
-    //     case SLEEPING:
-    //     case RUNNABLE:
-    //     case RUNNING:
-    //         if (q->stride < min_stride)
-    //             min_stride = q->stride;
-    //     default:
-    //         continue;
-    //     }
-    // if (min_stride == 0xFFFFFFFFFFFFFFFULL)
-    //     min_stride = 0;
-    // p->stride = min_stride;
     p->priority = 16;
     p->cpu_time = 0;
     p->last_start_time = 0;
@@ -291,16 +275,12 @@ void switch_to_scheduler(void) {
     KERNEL_ASSERT(!intr_get(), "interrput should be off");                // interrput is off
 
     base_interrupt_status = mycpu()->base_interrupt_status;
+    // debugcore("in switch_to_scheduler before swtch base_interrupt_status=%d", base_interrupt_status);
     w_dsid(0);
-    mmiowb();
-    if (is_panic_addr(mycpu()->context.ra) || is_panic_addr(p->context.ra))
-    {
-        infocore("in sched before swtch base_interrupt_status=%d", base_interrupt_status);
-        infocore("1070 in switch !\n");
-    }
+    fence();
     uint64 old_sp = r_sp();
     swtch(&p->context, &mycpu()->context); // will goto scheduler()
-    mmiowb();
+    // fence();
     uint64 new_sp = r_sp();
     // debugcore("in switch_to_scheduler after swtch");
     mycpu()->base_interrupt_status = base_interrupt_status;

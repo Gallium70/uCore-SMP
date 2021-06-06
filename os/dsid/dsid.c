@@ -111,6 +111,7 @@ void init_dsid(void)
 
 uint32 cp_reg_r(uint32 dm_reg)
 {
+    fence();
     return (uint32) * ((uint32 *)DSID_CP_BASE + dm_reg);
 }
 
@@ -123,6 +124,6 @@ void cp_reg_w(uint32 dm_reg, uint32 val)
     else
     {
         *((uint32 *)DSID_CP_BASE + dm_reg) = val;
-        mmiowb();
+        fence();
     }
 }

@@ -17,13 +17,13 @@ inline uint32 NextInteger(uint32 x)
 int main()
 {
     uint64 start_time = time_ms();
-    int times = 5, x = kSeed;
+    int x = kSeed;
     char arr_name[] = "jammerx";
     arr_name[6] += getpid();
     uint32 *arr = (uint32 *)sharedmem(arr_name, PGROUNDUP(kArrLen * sizeof(uint32)));
 
-    while (times-- > 0)
-        for (int i = 0; i < kArrLen; ++i, x = NextInteger(x))
+    while (time_ms() - start_time < 10000)
+        for (int i = 0; i < (kArrLen >> 3); ++i, x = NextInteger(x))
             arr[x & (kArrLen - 1)] += x;
     return time_ms() - start_time;
 }

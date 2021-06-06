@@ -101,7 +101,6 @@ void syscall()
         char *name=syscall_names(id);
         (void) name;
         tracecore("syscall %d (%s) args:%p %p %p %p %p %p %p", (int)id, name ,args[0] , args[1], args[2], args[3], args[4], args[5], args[6]);
-        (void)name;
     }
     pushtrace(id);
     switch (id) {
@@ -188,7 +187,7 @@ void syscall()
         warnf("unknown syscall %d", (int)id);
     }
 
-    if(id != SYS_execv)
+    if(id != SYS_execv || ret != 0)
         trapframe->a0 = ret; // return value
 
     if (id != SYS_write && id != SYS_read)

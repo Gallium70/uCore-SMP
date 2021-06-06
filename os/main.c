@@ -25,6 +25,7 @@ void hart_bootcamp(uint64 hartid, uint64 a1) {
     w_tp(hartid);
     kvminithart(); // turn on paging
     trapinit_hart();
+
     plicinithart(); // ask PLIC for device interrupts
 
     printf("[ucore] start bootcamp hart %d\n", hartid);
@@ -176,7 +177,6 @@ void main(uint64 hartid, uint64 a1) {
             }
         }
 
-        // ebreak();
         wait_all_boot();
     } else {
         hart_bootcamp(hartid, a1);

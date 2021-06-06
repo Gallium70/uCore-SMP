@@ -27,9 +27,9 @@ void printfinit(void)
 
 static void
 printint(int xx, int base, int sign) {
-    char buf[25];
+    char buf[16];
     int i;
-    int x;
+    uint x;
 
     if (sign && (sign = xx < 0))
         x = -xx;

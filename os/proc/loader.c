@@ -74,7 +74,7 @@ void bin_loader(uint64 start, uint64 end, struct proc *p)
 void loader(int id, struct proc *p) {
     // infocore("loader %s", names[id]);
     bin_loader(app_info_ptr[id], app_info_ptr[id + 1], p);
-    mmiowb();
+    fence_i();
 }
 
 // load shell from kernel data section

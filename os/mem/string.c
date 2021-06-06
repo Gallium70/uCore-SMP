@@ -26,8 +26,8 @@ int memcmp(const void *v1, const void *v2, uint n) {
 
 void *
 memmove(void *dst, const void *src, uint n) {
-    const uchar *s;
-    uchar *d;
+    const char *s;
+    char *d;
 
     s = src;
     d = dst;

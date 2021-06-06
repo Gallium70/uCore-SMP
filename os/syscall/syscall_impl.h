@@ -51,12 +51,12 @@ int64 sys_setpriority(int64 priority);
 
 int64 sys_getpriority();
 
+void* sys_sharedmem(char* name_va, size_t len);
+
 int sys_set_dsid(int pid, uint32 dsid);
 
 int sys_set_dsid_param(uint32 dsid, uint32 freq, uint32 size, uint32 inc, uint32 mask);
 
 uint32 sys_get_l2_traffic(uint32 dsid);
-
-void *sys_sharedmem(char *name_va, size_t len);
 
 #endif // SYSCALL_IMPL_H

@@ -70,8 +70,6 @@ uservec:
         ld tp, 32(a0)
         ld t0, 16(a0)
         ld t1, 0(a0)
-        fence iorw, iorw
-        fence.i
         csrw satp, t1
         sfence.vma zero, zero
         jr t0
@@ -85,8 +83,6 @@ userret:
         # a1: user page table, for satp.
 
         # switch to the user page table.
-        fence iorw, iorw
-        fence.i
         csrw satp, a1
         sfence.vma zero, zero
 
