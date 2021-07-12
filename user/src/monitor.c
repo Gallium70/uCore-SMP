@@ -117,10 +117,10 @@ int main(void)
                 prev_l2_traffic[dsid] = l2_traffic;
             }
         }
-        puts("\n");
+        // puts("\n");
 
         // printf("----------------------------------------------------------------------\n\n");
-        uint64 sleep_time = 1000 - (time_ms() - start_time);
+        int64 sleep_time = 1000 - (time_ms() - start_time);
         if (sleep_time > 0)
             sleep(sleep_time);
     }
